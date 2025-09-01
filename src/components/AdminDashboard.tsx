@@ -30,6 +30,21 @@ import {
 } from '@/components/ui/dialog';
 
 const AdminDashboard = () => {
+  // State for Add Student dialog and form
+  const [studentName, setStudentName] = React.useState('');
+  const [studentEmail, setStudentEmail] = React.useState('');
+
+  const handleAddStudent = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!studentName || !studentEmail) {
+      toast.error('Please fill in all fields.');
+      return;
+    }
+    // Here you would add logic to actually add the student
+    toast.success(`Student ${studentName} added!`);
+    setStudentName('');
+    setStudentEmail('');
+  };
   const { user, logout } = useAuth();
 
   const totalStudents = mockStudents.length;
@@ -181,10 +196,48 @@ const AdminDashboard = () => {
             </CardHeader>
             <CardContent className="space-y-3">
               <div className="flex gap-2">
-                <Button className="flex-1">
-                  <Plus className="w-4 h-4 mr-2" />
-                  Add Student
-                </Button>
+                <Dialog>
+                  <DialogTrigger asChild>
+                    <Button className="flex-1">
+                      <Plus className="w-4 h-4 mr-2" />
+                      Add Student
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent>
+                    <DialogHeader>
+                      <DialogTitle>Add Student</DialogTitle>
+                      <DialogDescription>Enter the student's details below.</DialogDescription>
+                    </DialogHeader>
+                    <form onSubmit={handleAddStudent} className="space-y-4">
+                      <div>
+                        <label className="block text-sm font-medium mb-1">Name</label>
+                        <input
+                          type="text"
+                          className="w-full border rounded px-3 py-2"
+                          value={studentName}
+                          onChange={e => setStudentName(e.target.value)}
+                          placeholder="Student Name"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium mb-1">Email</label>
+                        <input
+                          type="email"
+                          className="w-full border rounded px-3 py-2"
+                          value={studentEmail}
+                          onChange={e => setStudentEmail(e.target.value)}
+                          placeholder="student@email.com"
+                        />
+                      </div>
+                      <DialogFooter>
+                        <DialogClose asChild>
+                          <Button type="button" variant="outline">Cancel</Button>
+                        </DialogClose>
+                        <Button type="submit">Add Student</Button>
+                      </DialogFooter>
+                    </form>
+                  </DialogContent>
+                </Dialog>
                 <Button variant="outline" className="flex-1">
                   <Eye className="w-4 h-4 mr-2" />
                   View All
